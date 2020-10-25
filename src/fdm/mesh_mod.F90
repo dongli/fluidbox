@@ -7,6 +7,7 @@ module mesh_mod
   private
 
   public mesh_type
+  public global_mesh
 
   type mesh_type
     integer :: nx = 0
@@ -20,10 +21,10 @@ module mesh_mod
     integer full_y_iend
     integer half_y_ibeg
     integer half_y_iend
-    integer full_z_ibeg
-    integer full_z_iend
-    integer half_z_ibeg
-    integer half_z_iend
+    integer full_eta_ibeg
+    integer full_eta_iend
+    integer half_eta_ibeg
+    integer half_eta_iend
     real(r8), allocatable, dimension(:) :: full_x
     real(r8), allocatable, dimension(:) :: half_x
     real(r8), allocatable, dimension(:) :: full_y
@@ -35,6 +36,8 @@ module mesh_mod
     procedure :: clear => mesh_clear
     final :: mesh_final
   end type mesh_type
+
+  type(mesh_type) global_mesh
 
 contains
 
@@ -51,18 +54,18 @@ contains
     this%ny = ny
     this%nz = nz
 
-    this%full_x_ibeg = 1
-    this%full_x_iend = nx
-    this%half_x_ibeg = 1
-    this%half_x_iend = nx
-    this%full_y_ibeg = 1
-    this%full_y_iend = ny
-    this%half_y_ibeg = 1
-    this%half_y_iend = ny
-    this%full_z_ibeg = 1
-    this%full_z_iend = nz
-    this%half_z_ibeg = 1
-    this%half_z_iend = nz + 1
+    this%full_x_ibeg    = 1
+    this%full_x_iend    = nx
+    this%half_x_ibeg    = 1
+    this%half_x_iend    = nx
+    this%full_y_ibeg    = 1
+    this%full_y_iend    = ny
+    this%half_y_ibeg    = 1
+    this%half_y_iend    = ny
+    this%full_eta_ibeg  = 1
+    this%full_eta_iend  = nz
+    this%half_eta_ibeg  = 1
+    this%half_eta_iend  = nz + 1
 
   end subroutine mesh_init
 

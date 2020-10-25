@@ -12,13 +12,15 @@ module namelist_mod
   real(8) ::   end_y = 1
 
   character(30) :: test_case = ''
+  character(30) :: vert_coord_scheme = 'hybrid'
 
   namelist /fluidbox/ &
   start_x           , &
     end_x           , &
   start_y           , &
     end_y           , &
-  test_case
+  test_case         , &
+  vert_coord_scheme
 
 contains
 

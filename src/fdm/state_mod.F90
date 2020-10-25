@@ -14,6 +14,7 @@ module state_mod
     real(r8), allocatable, dimension(:,:,:) :: v
     real(r8), allocatable, dimension(:,:,:) :: w
     real(r8), allocatable, dimension(:,:,:) :: pt
+    real(r8), allocatable, dimension(:,:,:) :: t
     real(r8), allocatable, dimension(:,:  ) :: phs
     real(r8), allocatable, dimension(:,:,:) :: gz
     real(r8), allocatable, dimension(:,:,:) :: gz_eta
@@ -34,15 +35,16 @@ contains
 
     call this%clear()
 
-    allocate(this%u     (mesh%half_x_ibeg:mesh%half_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_z_ibeg:mesh%full_z_iend))
-    allocate(this%v     (mesh%full_x_ibeg:mesh%full_x_iend,mesh%half_y_ibeg:mesh%half_y_iend,mesh%full_z_ibeg:mesh%full_z_iend))
-    allocate(this%w     (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%half_z_ibeg:mesh%half_z_iend))
-    allocate(this%pt    (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_z_ibeg:mesh%full_z_iend))
+    allocate(this%u     (mesh%half_x_ibeg:mesh%half_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_eta_ibeg:mesh%full_eta_iend))
+    allocate(this%v     (mesh%full_x_ibeg:mesh%full_x_iend,mesh%half_y_ibeg:mesh%half_y_iend,mesh%full_eta_ibeg:mesh%full_eta_iend))
+    allocate(this%w     (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%half_eta_ibeg:mesh%half_eta_iend))
+    allocate(this%pt    (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_eta_ibeg:mesh%full_eta_iend))
+    allocate(this%t     (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_eta_ibeg:mesh%full_eta_iend))
     allocate(this%phs   (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend                                  ))
-    allocate(this%gz    (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_z_ibeg:mesh%full_z_iend))
-    allocate(this%gz_eta(mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%half_z_ibeg:mesh%half_z_iend))
-    allocate(this%ph    (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_z_ibeg:mesh%full_z_iend))
-    allocate(this%ph_eta(mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%half_z_ibeg:mesh%half_z_iend))
+    allocate(this%gz    (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_eta_ibeg:mesh%full_eta_iend))
+    allocate(this%gz_eta(mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%half_eta_ibeg:mesh%half_eta_iend))
+    allocate(this%ph    (mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%full_eta_ibeg:mesh%full_eta_iend))
+    allocate(this%ph_eta(mesh%full_x_ibeg:mesh%full_x_iend,mesh%full_y_ibeg:mesh%full_y_iend,mesh%half_eta_ibeg:mesh%half_eta_iend))
 
   end subroutine state_cgrid_lorenz_init
 
@@ -54,6 +56,7 @@ contains
     if (allocated(this%v     )) deallocate(this%v     )
     if (allocated(this%w     )) deallocate(this%w     )
     if (allocated(this%pt    )) deallocate(this%pt    )
+    if (allocated(this%t     )) deallocate(this%t     )
     if (allocated(this%phs   )) deallocate(this%phs   )
     if (allocated(this%gz    )) deallocate(this%gz    )
     if (allocated(this%gz_eta)) deallocate(this%gz_eta)

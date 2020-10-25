@@ -8,13 +8,14 @@ module schar_mountain_test_mod
 
   private
 
-  public schar_mountain_test_zs
-  public schar_mountain_test_z
-  public schar_mountain_test_p
-  public schar_mountain_test_t
-  public schar_mountain_test_u
-  public schar_mountain_test_v
-  public schar_mountain_test_rayleigh_damp
+  public schar_mountain_test_ic_zs
+  public schar_mountain_test_ic_z
+  public schar_mountain_test_ic_p
+  public schar_mountain_test_ic_t
+  public schar_mountain_test_ic_u
+  public schar_mountain_test_ic_v
+  public schar_mountain_test_fc_u
+  public schar_mountain_test_fc_v
 
   real(r8), parameter :: ztop = 3.0e4_r8    ! Height position of the model top (m)
   real(r8), parameter :: ptop = 32.818e2_r8 ! Pressure at the model top at the equator (Pa)
@@ -34,16 +35,16 @@ module schar_mountain_test_mod
 
 contains
 
-  real(r8) function schar_mountain_test_zs(x, y) result(res)
+  real(r8) function schar_mountain_test_ic_zs(x, y) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
 
     res = h0 * exp(-(x - xc)**2 / d**2) * cos(pi * (x - xc) / xi)**2
 
-  end function schar_mountain_test_zs
+  end function schar_mountain_test_ic_zs
 
-  real(r8) function schar_mountain_test_z(x, y, p) result(res)
+  real(r8) function schar_mountain_test_ic_z(x, y, p) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
@@ -51,9 +52,9 @@ contains
 
     res = Rd * teq / g * log(peq / p)
 
-  end function schar_mountain_test_z
+  end function schar_mountain_test_ic_z
 
-  real(r8) function schar_mountain_test_p(x, y, z) result(res)
+  real(r8) function schar_mountain_test_ic_p(x, y, z) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
@@ -61,9 +62,9 @@ contains
 
     res = peq * exp(-g * z / Rd / teq)
 
-  end function schar_mountain_test_p
+  end function schar_mountain_test_ic_p
 
-  real(r8) function schar_mountain_test_t(x, y, z, p) result(res)
+  real(r8) function schar_mountain_test_ic_t(x, y, z, p) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
@@ -72,9 +73,9 @@ contains
 
     res = teq
 
-  end function schar_mountain_test_t
+  end function schar_mountain_test_ic_t
 
-  real(r8) function schar_mountain_test_u(x, y, z, p) result(res)
+  real(r8) function schar_mountain_test_ic_u(x, y, z, p) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
@@ -86,13 +87,13 @@ contains
     if (present(z)) then
       zz = z
     else if (present(p)) then
-      zz = schar_mountain_test_z(x, y, p)
+      zz = schar_mountain_test_ic_z(x, y, p)
     end if
     res = ueq * sqrt(2 * teq / teq * cs * zz + teq / teq)
 
-  end function schar_mountain_test_u
+  end function schar_mountain_test_ic_u
 
-  real(r8) function schar_mountain_test_v(x, y, z, p) result(res)
+  real(r8) function schar_mountain_test_ic_v(x, y, z, p) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
@@ -101,23 +102,22 @@ contains
 
     res = 0.0_r8
 
-  end function schar_mountain_test_v
+  end function schar_mountain_test_ic_v
 
-  subroutine schar_mountain_test_rayleigh_damp(x, y, z, p, u, v)
+  real(r8) function schar_mountain_test_fc_u(u, x, y, z, p) result(res)
 
+    real(r8), intent(in) :: u
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
     real(r8), intent(in), optional :: z
     real(r8), intent(in), optional :: p
-    real(r8), intent(inout) :: u
-    real(r8), intent(inout) :: v
 
     real(r8) zz, f
 
     if (present(z)) then
       zz = z
     else if (present(p)) then
-      zz = schar_mountain_test_z(x, y, p)
+      zz = schar_mountain_test_ic_z(x, y, p)
     end if
     if (zz > zh) then
       f = sin(pi05 * (zz - zh) / (ztop - zh))**2
@@ -125,9 +125,33 @@ contains
       f = 0.0_r8
     end if
 
-    u = u - f / tau0 * (u - schar_mountain_test_u(x, y, z, p))
-    v = v - f / tau0 * (v - schar_mountain_test_v(x, y, z, p))
+    res = u - f / tau0 * (u - schar_mountain_test_ic_u(x, y, z, p))
 
-  end subroutine schar_mountain_test_rayleigh_damp
+  end function schar_mountain_test_fc_u
+
+  real(r8) function schar_mountain_test_fc_v(v, x, y, z, p) result(res)
+
+    real(r8), intent(in) :: v
+    real(r8), intent(in) :: x
+    real(r8), intent(in) :: y
+    real(r8), intent(in), optional :: z
+    real(r8), intent(in), optional :: p
+
+    real(r8) zz, f
+
+    if (present(z)) then
+      zz = z
+    else if (present(p)) then
+      zz = schar_mountain_test_ic_z(x, y, p)
+    end if
+    if (zz > zh) then
+      f = sin(pi05 * (zz - zh) / (ztop - zh))**2
+    else
+      f = 0.0_r8
+    end if
+
+    res = v - f / tau0 * (v - schar_mountain_test_ic_v(x, y, z, p))
+
+  end function schar_mountain_test_fc_v
 
 end module schar_mountain_test_mod
