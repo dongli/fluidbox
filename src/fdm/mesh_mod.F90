@@ -47,6 +47,23 @@ contains
 
     call this%clear()
 
+    this%nx = nx
+    this%ny = ny
+    this%nz = nz
+
+    this%full_x_ibeg = 1
+    this%full_x_iend = nx
+    this%half_x_ibeg = 1
+    this%half_x_iend = nx
+    this%full_y_ibeg = 1
+    this%full_y_iend = ny
+    this%half_y_ibeg = 1
+    this%half_y_iend = ny
+    this%full_z_ibeg = 1
+    this%full_z_iend = nz
+    this%half_z_ibeg = 1
+    this%half_z_iend = nz + 1
+
   end subroutine mesh_init
 
   subroutine mesh_clear(this)
