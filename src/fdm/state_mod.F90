@@ -7,6 +7,8 @@ module state_mod
 
   private
 
+  public state_cgrid_lorenz_type
+
   type state_cgrid_lorenz_type
     real(r8), allocatable, dimension(:,:,:) :: u
     real(r8), allocatable, dimension(:,:,:) :: v

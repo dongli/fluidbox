@@ -8,7 +8,8 @@ module schar_mountain_test_mod
 
   private
 
-  public schar_mountain_test_gzs
+  public schar_mountain_test_zs
+  public schar_mountain_test_z
   public schar_mountain_test_p
   public schar_mountain_test_t
   public schar_mountain_test_u
@@ -33,27 +34,32 @@ module schar_mountain_test_mod
 
 contains
 
-  real(r8) function schar_mountain_test_gzs(x, y) result(res)
+  real(r8) function schar_mountain_test_zs(x, y) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
 
     res = h0 * exp(-(x - xc)**2 / d**2) * cos(pi * (x - xc) / xi)**2
 
-  end function schar_mountain_test_gzs
+  end function schar_mountain_test_zs
 
-  real(r8) function schar_mountain_test_p(x, y, z, p) result(res)
+  real(r8) function schar_mountain_test_z(x, y, p) result(res)
 
     real(r8), intent(in) :: x
     real(r8), intent(in) :: y
-    real(r8), intent(in), optional :: z
-    real(r8), intent(in), optional :: p
+    real(r8), intent(in) :: p
 
-    if (present(z)) then
-      res = peq * exp(-g * z / Rd / teq)
-    else
-      res = peq * exp(-g * p_to_z(p) / Rd / teq)
-    end if
+    res = Rd * teq / g * log(peq / p)
+
+  end function schar_mountain_test_z
+
+  real(r8) function schar_mountain_test_p(x, y, z) result(res)
+
+    real(r8), intent(in) :: x
+    real(r8), intent(in) :: y
+    real(r8), intent(in) :: z
+
+    res = peq * exp(-g * z / Rd / teq)
 
   end function schar_mountain_test_p
 
@@ -80,7 +86,7 @@ contains
     if (present(z)) then
       zz = z
     else if (present(p)) then
-      zz = p_to_z(p)
+      zz = schar_mountain_test_z(x, y, p)
     end if
     res = ueq * sqrt(2 * teq / teq * cs * zz + teq / teq)
 
@@ -111,7 +117,7 @@ contains
     if (present(z)) then
       zz = z
     else if (present(p)) then
-      zz = p_to_z(p)
+      zz = schar_mountain_test_z(x, y, p)
     end if
     if (zz > zh) then
       f = sin(pi05 * (zz - zh) / (ztop - zh))**2
@@ -123,13 +129,5 @@ contains
     v = v - f / tau0 * (v - schar_mountain_test_v(x, y, z, p))
 
   end subroutine schar_mountain_test_rayleigh_damp
-
-  real(r8) function p_to_z(p) result(res)
-
-    real(r8), intent(in) :: p
-
-    res = Rd * teq / g * log(peq / p)
-
-  end function p_to_z
 
 end module schar_mountain_test_mod

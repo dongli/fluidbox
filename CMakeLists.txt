@@ -7,6 +7,7 @@ set(source_files
   src/namelist_mod.F90
   src/fdm/mesh_mod.F90
   src/fdm/state_mod.F90
+  src/fdm/test_mod.F90
   src/tests/schar_mountain_test_mod.F90
 )
 
